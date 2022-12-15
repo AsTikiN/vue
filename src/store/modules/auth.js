@@ -1,5 +1,5 @@
 export default {
-  namespaced: true,
+  // namespaced: true,
   state: {
     isLoggined: false,
     accounts: [{ id: 1, login: "admin@site.com", password: "Qaz123" }],

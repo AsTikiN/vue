@@ -1,14 +1,18 @@
 <template>
   <div>
     <md-content class="md-primary">
-      <div class="md-title">VUE JS</div>
-      <md-menu md-direction="bottom-start" :md-active="openLoginDropdown" @click="handleLoginClick">
-        <md-button class="md-raised md-accent">
+      <router-link to="/" style="text-decoration: none; color: inherit;">
+        <span class="md-title">
+          VUE JS
+        </span>
+      </router-link>
+      <md-menu md-direction="bottom-start" @click="handleLoginClick" style="position: relative;">
+        <md-button class="md-raised md-accent" md-menu-trigger>
           <span class="md-title">
             {{ $store.getters.login ? "LOG OUT" : "LOG IN" }}
           </span>
         </md-button>
-        <md-menu-content>
+        <md-menu-content v-if="!$store.getters.login" style="position: absolute; right: 0; top: 16px;">
           <md-menu-item class="menu_item">
             <md-field :class="isValidLogin">
               <label>Login</label>
@@ -71,7 +75,6 @@ export default {
         ],
         message: ""
       },
-      openLoginDropdown: false
     }
   },
   methods: {
@@ -88,16 +91,19 @@ export default {
 
       if (this.loginValue.error || this.passwordValue.error) return;
 
+      this.loginValue.text = "";
+      this.passwordValue.text = "";
       this.$store.commit("setLogin", true);
-      this.openLoginDropdown = false;
     },
 
     handleLoginClick() {
       const loginStatus = this.$store.getters.login;
-      this.openLoginDropdown = loginStatus ? false : true;
 
-      if (loginStatus) this.$store.commit("setLogin", false);
-
+      if (loginStatus) {
+        this.$store.commit("setLogin", false);
+        this.$router.push('/');
+        return;
+      }
     },
 
     validateField(field, rules) {
@@ -129,9 +135,8 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('persons/fetchUsers', null)
-  }
-
+    this.$store.dispatch('fetchUsers')
+  },
 };
 </script>
 
@@ -146,6 +151,6 @@ export default {
 }
 
 .menu_item--centered {
-  margin: 0 auto
+  margin: 0 auto;
 }
 </style>
